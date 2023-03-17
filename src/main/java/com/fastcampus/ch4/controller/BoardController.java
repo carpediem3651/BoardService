@@ -24,6 +24,32 @@ public class BoardController {
     @Autowired
     BoardService boardService;
 
+    @GetMapping("/write")
+    public String write(Model m) {
+        m.addAttribute("mode", "new");
+
+        return "board";
+    }
+    @PostMapping("/write")
+    public String write(BoardDto boardDto, RedirectAttributes rattr, Model m, HttpSession session) {
+        String writer = (String)session.getAttribute("id");
+        boardDto.setWriter(writer);
+
+        try {
+            if (boardService.write(boardDto) != 1)
+                throw new Exception("Write failed.");
+
+            rattr.addFlashAttribute("msg", "WRT_OK");
+            return "redirect:/board/list";
+        } catch (Exception e) {
+            e.printStackTrace();
+            m.addAttribute(boardDto);
+            m.addAttribute("mode", "new");
+            m.addAttribute("msg", "WRT_ERR");
+            return "board";
+        }
+    }
+
     @PostMapping("/remove")
     public String remove(Integer bno, Integer page, Integer pageSize, Model m, HttpSession session, RedirectAttributes rattr) {
         String writer = (String) session.getAttribute("id");
