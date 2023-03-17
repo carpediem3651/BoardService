@@ -56,6 +56,22 @@
             form.attr("method", "post");
             form.submit();
         });
+
+        $("#modifyBtn").on("click", function(){
+            let form = $("#form");
+            let isReadonly = $("input[name=title]").attr('readonly');
+            // 1. 읽기 상태이면, 수정 상태로 변경
+            if(isReadonly=='readonly') {
+                $("input[name=title]").attr('readonly', false);
+                $("textarea").attr('readonly', false);
+                $("h2").html("게시물 수정");
+                return;
+            }
+            // 2. 수정 상태이면, 수정된 내용을 서버로 전송
+            form.attr("action", "<c:url value='/board/modify'/>");
+            form.attr("method", "post");
+            form.submit();
+        });
     });
 </script>
 </body>
